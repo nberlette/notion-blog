@@ -15,6 +15,10 @@ const normalizeId = (id) => {
   )}-${id.substr(20)}`
 }
 
+if (!process.env.NOTION_TOKEN || process.env.BLOG_INDEX_ID) {
+  const dotenv = require('dotenv').config({ debug: true });
+}
+
 const NOTION_TOKEN = process.env.NOTION_TOKEN
 const BLOG_INDEX_ID = normalizeId(process.env.BLOG_INDEX_ID)
 const API_ENDPOINT = 'https://www.notion.so/api/v3'
