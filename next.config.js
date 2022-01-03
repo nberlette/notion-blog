@@ -43,6 +43,18 @@ if (!BLOG_INDEX_ID) {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: [
+      's3-us-west-2.amazonaws.com',
+      's3.amazonaws.com',
+      'amazonaws.com',
+      '*.amazonaws.com',
+      'raw.githubusercontent.com',
+      'github.com',
+      'vercel.app',
+      'n.berlette.com'
+    ]
+  },
   webpack(cfg, { dev, isServer }) {
     // only compile build-rss in production server build
     if (dev || !isServer) return cfg

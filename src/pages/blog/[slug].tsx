@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link'
 import Image from 'next/image'
 import fetch from 'node-fetch'
@@ -9,7 +10,7 @@ import ReactJSXParser from '@zeit/react-jsx-parser'
 import blogStyles from './blog.module.css'
 import { textBlock } from '@lib/notion/renderers'
 import getPageData from '@lib/notion/getPageData'
-import React, { CSSProperties, useEffect } from 'react'
+import React, { createElement, CSSProperties, useEffect } from 'react'
 import getBlogIndex from '@lib/notion/getBlogIndex'
 import getNotionUsers from '@lib/notion/getNotionUsers'
 import { getBlogLink, getDateStr } from '@lib/blog-helpers'
@@ -184,7 +185,7 @@ const RenderPost = ({ post, redirect, preview }) => {
             {[post.Authors].map((author, index) =>
               <span key={'author'+index} className={blogStyles.author}>
                 {author.photo && (
-                  <Image key={'photo'+index} src={author.photo} alt={author.name + "'s photo"} className={blogStyles.profilephoto} />
+                  <img key={'photo'+index} src={author.photo} alt={author.name + "'s photo"} className={blogStyles.profilephoto} />
                 )}
                 <span itemProp="author" key={'username'+index} className={blogStyles.authorname}>
                    {author.full_name || author.name}
@@ -505,13 +506,18 @@ const RenderPost = ({ post, redirect, preview }) => {
             case 'gist': {
               let { source } = properties;
               if (source) {
+                const id = source[0][0].split('/')[-1];
                 toRender.push(
                   <>
                     <div
                       className="asset-wrapper gist-wrapper"
-                      dangerouslySetInnerHTML={{ __html: `<script src="${source[0][0]}.js"></script>` }}
                       key={id}
-                    ></div>
+                      id={id}
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          `<script>document.write('<scr'+'ipt src="${source[0][0]}.js"></scr'+'ipt>');</script>`
+                      }}>
+                    </div>
                   </>
                 )
               }

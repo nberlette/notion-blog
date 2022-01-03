@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@components/header'
@@ -94,7 +95,7 @@ const Index = ({ posts = [], preview }) => {
                 {post.Authors?.name && (
                     <div className={blogStyles.author} style={{ display: 'flex', flex: '0 1 auto', gap: '1rem', marginBottom: '1em' }}>
                       {post.Authors.photo && (
-                        <Image src={post.Authors.photo} alt={post.Authors.name + "'s photo"} className="profile-photo" />
+                      <img src={post.Authors.photo} alt={post.Authors.name + "'s photo"} className="profile-photo" width={48} height={48} />
                       )}
                       <span itemProp="author" className="author-name">
                         {post.Authors.name || post.Authors.full_name}

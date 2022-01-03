@@ -1,20 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 import Header from '@components/header'
 import ExtLink from '@components/ext-link'
 import Features from '@components/features'
 import sharedStyles from './shared.module.css'
-import Image from 'next/image'
 
 export default function Index() {
   return (
     <>
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
-        <Image
-          src="/vercel-and-notion.png"
-          height="85"
-          width="250"
-          alt="Vercel + Notion"
-        />
         <h1>My Notion Blog</h1>
         <h2>
           Blazing Fast Notion Blog with Next.js{"' "}
@@ -27,7 +21,15 @@ export default function Index() {
           </ExtLink>
         </h2>
 
-        <Features />
+        <p>
+          <img
+            src="/vercel-and-notion.png"
+            height="170"
+            width="500"
+            alt="Vercel + Notion"
+          />
+        </p>
+
 
         <div className="explanation">
           <p>
@@ -47,7 +49,11 @@ export default function Index() {
             blazing fast speeds, great local editing experience, and always
             being available!
           </p>
-
+        </div>
+        
+        <Features />
+        
+        <div className="explanation">
           <p>
             Get started by creating a new page in Notion and clicking the deploy
             button below. After you supply your token and the blog index id (the
@@ -65,7 +71,7 @@ export default function Index() {
       </div>
       <footer style={{ margin: '2em 0' }}>
         <ExtLink href="https://vercel.com/new/git/external?repository-url=https://github.com/nberlette/notion-blog/tree/main&project-name=notion-blog&repository-name=notion-blog">
-          <Image
+          <img
             src="https://vercel.com/button"
             width={200}
             alt="Deploy to Vercel button"

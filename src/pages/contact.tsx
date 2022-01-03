@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Header from '@components/header'
 import ExtLink from '@components/ext-link'
 import Image from 'next/image'
@@ -34,7 +35,7 @@ export default function Contact() {
       <Header titlePre="Contact" />
       <div className={sharedStyles.layout}>
         <div className={contactStyles.avatar}>
-          <Image src="https://github.com/nberlette.png" alt="@nberlette's github avatar" height={96}
+          <img src="https://github.com/nberlette.png" alt="@nberlette's github avatar" height={96}
             className="avatar-image" />
           <style jsx>{`.avatar-image { border-radius: 10em }`}</style>
         </div>

@@ -57,10 +57,13 @@ body {
   border-radius: 10px;
   border: 2px solid #00000036;
   box-shadow: 0.1rem 1rem 1.2rem #00000018, 0 0.18rem 0.12rem #0000001a !important;
-
+  padding-bottom: 0;
+  
   .gist {
     width: 100% !important;
-    height: 100% !important; 
+    height: 100% !important;
+    margin-bottom: -1em; 
+    padding-bottom: 0;
   
     .markdown-body {
 
