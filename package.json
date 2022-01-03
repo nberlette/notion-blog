@@ -1,35 +1,98 @@
 {
-  "name": "notion-blog",
+  "name": "next-notion-blog",
   "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Nicholas Berlette",
+    "email": "nick@berlette.com",
+    "url": "https://n.berlette.com"
+  },
+  "repository": "nberlette/notion-blog",
+  "bugs": "https://github.com/nberlette/notion-blog/issues",
+  "readme": "https://github.com/nberlette/notion-blog#readme",
+  "homepage": "https://n.berlette/notion-blog",
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "build": "next build && node .next/server/build-rss.js",
-    "format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,mdx,css,html,yml,yaml,scss,sass}\" --ignore-path .gitignore",
-    "lint-staged": "lint-staged"
+    "build": "next build",
+    "export": "next export",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "lint-staged": "lint-staged",
+    "build:rss": "node ./.next/server/build-rss",
+    "build:table": "ts-node ./src/lib/createTable.ts",
+    "format": "prettier --write \"src/**/*.{mjs,cjs,js,jsx,ts,tsx,json,md,mdx,yml,yaml,scss,css}\"",
+    "gh-pages": "yarn build && yarn export && touch out/.nojekyll && cp CNAME out/CNAME && gh-pages -d out/"
   },
-  "pre-commit": "lint-staged",
+  "prettier": {
+    "arrowParens": "avoid",
+    "printWidth": 120,
+    "bracketSameLine": false,
+    "jsxSingleQuote": false,
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "useTabs": false,
+    "trailingComma": "es5",
+    "embeddedLanguageFormatting": "auto"
+  },
+  "eslintConfig": {
+    "extends": "next"
+  },
+  "husky": {
+    "hooks": {
+      "post-commit": "git reset",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{mjs,cjs,js,jsx,ts,tsx,json,md,mdx,yml,yaml,scss,css}": [
+      "prettier --write",
+      "next lint --fix",
+      "git add"
+    ]
+  },
   "dependencies": {
-    "@zeit/react-jsx-parser": "2.0.0",
+    "@prefresh/next": "1.5.0",
+    "@zeit/react-jsx-parser": "npm:react-jsx-parser@^1.29.0",
     "async-sema": "3.1.0",
+    "fs-extra": "^10.0.0",
     "github-slugger": "1.2.1",
     "katex": "0.12.0",
-    "next": "^11.1.3",
+    "next": "12.0.3",
+    "next-plugin-preact": "3.0.6",
+    "preact": "10.6.4",
+    "preact-render-to-string": "5.1.19",
     "prismjs": "1.25.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "npm:@preact/compat@^17.0.2",
+    "react-dom": "npm:@preact/compat@^17.0.2",
+    "react-ssr-prepass": "npm:preact-ssr-prepass@1.2.0",
     "uuid": "8.1.0"
   },
   "devDependencies": {
     "@babel/core": ">=7.0.0 <8.0.0",
+    "@next/env": "^12.0.7",
+    "@prefresh/babel-plugin": "^0.4.0",
+    "@types/fs-extra": "^9.0.13",
     "@types/katex": "0.11.0",
-    "@types/node": "14.14.31",
-    "@types/react": "17.0.2",
+    "@types/node": "^17.0.6",
+    "@types/node-fetch": "^3.0.3",
+    "@types/react": "^17.0.2",
+    "@types/uuid": "^8.3.3",
     "dotenv": "^10.0.0",
+    "eslint": "<8.0.0",
+    "eslint-config-next": "12.0.7",
+    "gh-pages": "3.2.3",
+    "husky": "7.0.4",
+    "kleur": "^4.1.4",
     "lint-staged": "10.5.4",
     "node-fetch": "<3.0.0",
-    "pre-commit": "1.2.2",
+    "preact-ssr-prepass": "^1.2.0",
     "prettier": "2.2.1",
-    "typescript": "^4.4.4"
+    "sass": "^1.45.2",
+    "ts-node": "^10.4.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4",
+    "webpack": "^5.0.0"
   }
 }

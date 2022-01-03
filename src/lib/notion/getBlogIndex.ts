@@ -1,27 +1,24 @@
 import { Sema } from 'async-sema'
-import rpc, { values } from './rpc'
-import getTableData from './getTableData'
-import { getPostPreview } from './getPostPreview'
-import { readFile, writeFile } from '../fs-helpers'
-import { BLOG_INDEX_ID, BLOG_INDEX_CACHE } from './server-constants'
+import rpc, { values } from '@lib/notion/rpc'
+import { getTableData } from '@lib/notion/getTableData'
+import { getPostPreview } from '@lib/notion/getPostPreview'
+import { readJson, writeJson } from '@lib/fs-helpers'
+import { BLOG_INDEX_ID, BLOG_INDEX_CACHE } from '@lib/server-constants'
+import log from '@lib/logger';
 
-export default async function getBlogIndex(previews = true) {
+export default async function getBlogIndex(previews = true, pageId = BLOG_INDEX_ID) {
   let postsTable: any = null
   const useCache = process.env.USE_CACHE === 'true'
   const cacheFile = `${BLOG_INDEX_CACHE}${previews ? '_previews' : ''}`
 
   if (useCache) {
-    try {
-      postsTable = JSON.parse(await readFile(cacheFile, 'utf8'))
-    } catch (_) {
-      /* not fatal */
-    }
+    postsTable = await readJson(cacheFile, 'utf-8').catch(log.warn)
   }
 
   if (!postsTable) {
     try {
       const data = await rpc('loadPageChunk', {
-        pageId: BLOG_INDEX_ID,
+        pageId,
         limit: 100, // TODO: figure out Notion's way of handling pagination
         cursor: { stack: [] },
         chunkNumber: 0,
@@ -35,9 +32,7 @@ export default async function getBlogIndex(previews = true) {
 
       postsTable = await getTableData(tableBlock, true)
     } catch (err) {
-      console.warn(
-        `Failed to load Notion posts, have you run the create-table script?`
-      )
+      log.warn(`Failed to load Notion posts, have you run the create-table script?`)
       return {}
     }
 
@@ -68,7 +63,8 @@ export default async function getBlogIndex(previews = true) {
     }
 
     if (useCache) {
-      writeFile(cacheFile, JSON.stringify(postsTable), 'utf8').catch(() => {})
+      await writeJson(cacheFile, postsTable, 'utf8')
+        .then(log.success).catch(log.warn)
     }
   }
 

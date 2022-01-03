@@ -15,16 +15,16 @@ export const postIsPublished = (post: any) => {
 }
 
 export const normalizeSlug = slug => {
-  if (typeof slug !== 'string') return slug
+  if (typeof slug !== 'string') return slug;
 
   let startingSlash = slug.startsWith('/')
   let endingSlash = slug.endsWith('/')
 
   if (startingSlash) {
-    slug = slug.substr(1)
+    slug = slug.slice(1)
   }
   if (endingSlash) {
-    slug = slug.substr(0, slug.length - 1)
+    slug = slug.slice(0, slug.length - 1)
   }
   return startingSlash || endingSlash ? normalizeSlug(slug) : slug
 }

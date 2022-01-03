@@ -1,14 +1,14 @@
+const withPreact = require('next-plugin-preact')
 const fs = require('fs')
 const path = require('path')
 const {
   NOTION_TOKEN,
   BLOG_INDEX_ID,
-} = require('./src/lib/notion/server-constants')
+} = require('./src/lib/server-constants')
 
 try {
   fs.unlinkSync(path.resolve('.blog_index_data'))
 } catch (_) {
-  /* non fatal */
 }
 try {
   fs.unlinkSync(path.resolve('.blog_index_data_previews'))
@@ -41,7 +41,8 @@ if (!BLOG_INDEX_ID) {
   )
 }
 
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   webpack(cfg, { dev, isServer }) {
     // only compile build-rss in production server build
     if (dev || !isServer) return cfg
@@ -58,3 +59,5 @@ module.exports = {
     return cfg
   },
 }
+
+module.exports = withPreact(nextConfig);

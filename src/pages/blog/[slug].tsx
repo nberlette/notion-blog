@@ -1,17 +1,19 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import fetch from 'node-fetch'
 import { useRouter } from 'next/router'
-import Header from '../../components/header'
-import Heading from '../../components/heading'
-import components from '../../components/dynamic'
+import Header from '@components/header'
+import Heading from '@components/heading'
+import components from '@components/dynamic'
 import ReactJSXParser from '@zeit/react-jsx-parser'
-import blogStyles from '../../styles/blog.module.css'
-import { textBlock } from '../../lib/notion/renderers'
-import getPageData from '../../lib/notion/getPageData'
+import blogStyles from './blog.module.css'
+import { textBlock } from '@lib/notion/renderers'
+import getPageData from '@lib/notion/getPageData'
 import React, { CSSProperties, useEffect } from 'react'
-import getBlogIndex from '../../lib/notion/getBlogIndex'
-import getNotionUsers from '../../lib/notion/getNotionUsers'
-import { getBlogLink, getDateStr } from '../../lib/blog-helpers'
+import getBlogIndex from '@lib/notion/getBlogIndex'
+import getNotionUsers from '@lib/notion/getNotionUsers'
+import { getBlogLink, getDateStr } from '@lib/blog-helpers'
+import log from '@lib/logger'
 
 // Get the data for each blog post
 export async function getStaticProps({ params: { slug }, preview }) {
@@ -56,8 +58,9 @@ export async function getStaticProps({ params: { slug }, preview }) {
     }
   }
 
-  const { users } = await getNotionUsers(post.Authors || [])
-  post.Authors = Object.keys(users).map((id) => users[id].full_name)
+  const { users } = await getNotionUsers([...post.Authors || []])
+
+  post.Authors = [post.Authors].map((id: any) => users[id] || null);
 
   return {
     props: {
@@ -66,6 +69,30 @@ export async function getStaticProps({ params: { slug }, preview }) {
     },
     revalidate: 10,
   }
+}
+
+export function tokenizeArrayToString(array) {
+  return array.reduce((text: string, [token, tags]) => {
+    if (tags && Array.isArray(tags) && tags?.length > 0) {
+      return text + tags.reduce((acc: string, [tag, prop]) => (
+        tag === 'a'
+          ? `<a href="${prop}" title="${token}">${acc}</a>`
+          : tag === 'b'
+            ? `<strong>${acc}</strong>`
+            : tag === 'c'
+              ? `<code>${acc}</code>`
+              : tag === 'i'
+                ? `<em>${acc}</code>`
+                : tag === 's'
+                  ? `<span style="text-decoration:line-through">${acc}</span>`
+                  : tag === '_'
+                    ? `<span style="text-decoration:underline">${acc}</span>`
+                    : `<${tag}>${acc}</${tag}>`
+      ), token);
+    } else {
+      return text + token;
+    }
+  }, '')
 }
 
 // Return our list of blog posts to prerender
@@ -111,12 +138,12 @@ const RenderPost = ({ post, redirect, preview }) => {
         document.querySelector('body').appendChild(script)
       }
     }
-  }, [])
+  }, [post])
   useEffect(() => {
     if (redirect && !post) {
       router.replace(redirect)
     }
-  }, [redirect, post])
+  }, [router, redirect, post])
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -130,7 +157,7 @@ const RenderPost = ({ post, redirect, preview }) => {
     return (
       <div className={blogStyles.post}>
         <p>
-          Woops! didn't find that post, redirecting you back to the blog index
+          Whoops! We couldn&apos;t find that post, redirecting you back to the main blog page.
         </p>
       </div>
     )
@@ -144,25 +171,37 @@ const RenderPost = ({ post, redirect, preview }) => {
           <div className={blogStyles.previewAlert}>
             <b>Note:</b>
             {` `}Viewing in preview mode{' '}
-            <Link href={`/api/clear-preview?slug=${post.Slug}`}>
-              <button className={blogStyles.escapePreview}>Exit Preview</button>
+            <Link href={`/api/clear-preview?slug=${post.Slug}`} passHref>
+              <button className={blogStyles.escapePreview}><a>Exit Preview</a></button>
             </Link>
           </div>
         </div>
       )}
       <div className={blogStyles.post}>
-        <h1>{post.Page || ''}</h1>
-        {post.Authors.length > 0 && (
-          <div className="authors">By: {post.Authors.join(' ')}</div>
+        <h1 className={blogStyles.title}>{post.Page || ''}</h1>
+        {post.Authors && (
+          <div className="authors">
+            {[post.Authors].map((author, index) =>
+              <span key={'author'+index} className={blogStyles.author}>
+                {author.photo && (
+                  <Image key={'photo'+index} src={author.photo} alt={author.name + "'s photo"} className={blogStyles.profilephoto} />
+                )}
+                <span itemProp="author" key={'username'+index} className={blogStyles.authorname}>
+                   {author.full_name || author.name}
+                </span>
+              </span>)}
+          </div>
         )}
         {post.Date && (
-          <div className="posted">Posted: {getDateStr(post.Date)}</div>
+          <div className="posted">
+            <time itemProp="created_time">{getDateStr(post.Date)}</time>
+          </div>
         )}
 
         <hr />
 
         {(!post.content || post.content.length === 0) && (
-          <p>This post has no content</p>
+          <p>This post has no content! </p>
         )}
 
         {(post.content || []).map((block, blockIdx) => {
@@ -252,7 +291,8 @@ const RenderPost = ({ post, redirect, preview }) => {
                             {description}
                           </div>
                           <div className={blogStyles.bookmarkLinkWrapper}>
-                            <img
+                            <Image
+                              alt={description}
                               src={icon}
                               className={blogStyles.bookmarkLinkIcon}
                             />
@@ -264,7 +304,8 @@ const RenderPost = ({ post, redirect, preview }) => {
                         <div className={blogStyles.bookmarkCoverWrapper1}>
                           <div className={blogStyles.bookmarkCoverWrapper2}>
                             <div className={blogStyles.bookmarkCoverWrapper3}>
-                              <img
+                              <Image
+                                alt={'Bookmark Cover'}
                                 src={cover}
                                 className={blogStyles.bookmarkCover}
                               />
@@ -282,6 +323,9 @@ const RenderPost = ({ post, redirect, preview }) => {
           switch (type) {
             case 'page':
             case 'divider':
+              toRender.push(
+                <hr />
+              )
               break
             case 'text':
               if (properties) {
@@ -376,20 +420,26 @@ const RenderPost = ({ post, redirect, preview }) => {
               )
               break
             }
-            case 'header':
+            case 'header': {
               renderHeading('h1')
               break
-            case 'sub_header':
+            }
+            case 'sub_header': {
               renderHeading('h2')
               break
-            case 'sub_sub_header':
+            }
+            case 'sub_sub_header': {
               renderHeading('h3')
               break
-            case 'bookmark':
-              const { link, title, description } = properties
-              const { format = {} } = value
+            }
+            case 'bookmark': {
+              const { link, title, description } = properties;
+              const {
+                format = {}
+              } = value;
               renderBookmark({ link, title, description, format })
               break
+            }
             case 'code': {
               if (properties.title) {
                 const content = properties.title[0][0]
@@ -401,9 +451,7 @@ const RenderPost = ({ post, redirect, preview }) => {
                     <ReactJSXParser
                       key={id}
                       jsx={content}
-                      components={components}
                       componentsOnly={false}
-                      renderInpost={false}
                       allowUnknownElements={true}
                       blacklistedTags={['script', 'style']}
                     />
@@ -454,6 +502,47 @@ const RenderPost = ({ post, redirect, preview }) => {
               }
               break
             }
+            case 'gist': {
+              let { source } = properties;
+              if (source) {
+                toRender.push(
+                  <>
+                    <div
+                      className="asset-wrapper gist-wrapper"
+                      dangerouslySetInnerHTML={{ __html: `<script src="${source[0][0]}.js"></script>` }}
+                      key={id}
+                    ></div>
+                  </>
+                )
+              }
+              break
+            }
+            case 'to_do': {
+              let { title, checked } = properties;
+              let todo = tokenizeArrayToString(title)
+              if (checked) checked = checked.toString();
+              if (todo) {
+                toRender.push(
+                  <>
+                    <label className="todo">
+                      <input type="checkbox" checked={checked} disabled={true} />
+                      <span dangerouslySetInnerHTML={{ __html: todo }} />
+                    </label>
+                    <style jsx>{`
+                      label.todo {
+                        display: block;
+                        padding: 0.5em;
+                      }
+                      label.todo > span {
+                        font-size: 0.9em;
+                        margin-left: 0.5em;
+                      }
+                    `}</style>
+                  </>
+                )
+              }
+              break
+            }
             case 'equation': {
               if (properties && properties.title) {
                 const content = properties.title[0][0]
@@ -470,7 +559,7 @@ const RenderPost = ({ post, redirect, preview }) => {
                 process.env.NODE_ENV !== 'production' &&
                 !listTypes.has(type)
               ) {
-                console.log('unknown type', type)
+                log.warn('unknown type', type)
               }
               break
           }

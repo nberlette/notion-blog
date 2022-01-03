@@ -1,4 +1,4 @@
-import rpc from './rpc'
+import rpc from '@lib/notion/rpc'
 
 export default function queryCollection({
   collectionId,
@@ -24,7 +24,7 @@ export default function queryCollection({
         },
       },
       searchQuery: '',
-      userTimeZone: 'America/Phoenix',
+      userTimeZone: 'America/Los_Angeles',
     },
   }
 

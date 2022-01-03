@@ -15,8 +15,8 @@ const normalizeId = (id) => {
   )}-${id.substr(20)}`
 }
 
-if (!process.env.NOTION_TOKEN || process.env.BLOG_INDEX_ID) {
-  const dotenv = require('dotenv').config({ debug: true });
+if (!process.env.NOTION_TOKEN || !process.env.BLOG_INDEX_ID) {
+  const dotenv = require('dotenv').config();
 }
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN

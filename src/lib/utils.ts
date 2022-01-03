@@ -1,4 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next';
+import log from '@lib/logger';
 
 export function setHeaders(req: NextApiRequest, res: NextApiResponse): boolean {
   // set SPR/CORS headers
@@ -22,9 +23,30 @@ export async function handleData(res: NextApiResponse, data: any) {
 }
 
 export function handleError(res: NextApiResponse, error: string | Error) {
-  console.error(error)
+  log.error(error)
   res.status(500).json({
     status: 'error',
     message: 'an error occurred processing request',
   })
+}
+
+export { default as logger } from './logger';
+
+export function toJson(data: any, space?: string | number): string {
+  try {
+    return JSON.stringify(data, (k: string, v: any) => {
+      if (['undefined', 'function'].includes(typeof (v))) return;
+      return v;
+    }, space)
+  } catch {
+    return data.toString();
+  }
+}
+
+export function fromJson(text: string, reviver?: any): any {
+  try {
+    return JSON.parse(text, reviver)
+  } catch {
+    return {}
+  }
 }

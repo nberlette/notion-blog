@@ -1,29 +1,16 @@
-import { loadPageChunk } from './getPageData'
-import { values } from './rpc'
+import { loadPageChunk } from '@lib/notion/getPageData'
+import { values } from '@lib/notion/rpc'
 
 const nonPreviewTypes = new Set(['editor', 'page', 'collection_view'])
 
-export async function getPostPreview(pageId: string) {
-  let blocks
-  let dividerIndex = 0
-
+export async function getPostPreview (pageId: string) {
   const data = await loadPageChunk({ pageId, limit: 10 })
-  blocks = values(data.recordMap.block)
+  let blocks: any[] = values(data.recordMap.block)
+  const dividerIndex = blocks.indexOf((block: any) => block.value.type === 'divider')
 
-  for (let i = 0; i < blocks.length; i++) {
-    if (blocks[i].value.type === 'divider') {
-      dividerIndex = i
-      break
-    }
-  }
-
-  blocks = blocks
-    .splice(0, dividerIndex)
-    .filter(
-      ({ value: { type, properties } }: any) =>
-        !nonPreviewTypes.has(type) && properties
-    )
-    .map((block: any) => block.value.properties.title)
-
+  blocks = (dividerIndex > -1 ? blocks.slice(0, dividerIndex) : blocks)
   return blocks
+      .filter(({ value }) => !nonPreviewTypes.has(value.type) && value.properties)
+      .map((block: any) => block.value.properties.title)
+      .filter(value => typeof (value) !== 'undefined')
 }

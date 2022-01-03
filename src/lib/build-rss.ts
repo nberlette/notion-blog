@@ -1,13 +1,13 @@
 import { resolve } from 'path'
-import { writeFile } from './fs-helpers'
+import { writeFile } from '@lib/fs-helpers'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-import { textBlock } from './notion/renderers'
-import getBlogIndex from './notion/getBlogIndex'
-import getNotionUsers from './notion/getNotionUsers'
-import { postIsPublished, getBlogLink } from './blog-helpers'
+import { textBlock } from '@lib/notion/renderers'
+import getBlogIndex from '@lib/notion/getBlogIndex'
+import getNotionUsers from '@lib/notion/getNotionUsers'
+import { postIsPublished, getBlogLink } from '@lib/blog-helpers'
 import { loadEnvConfig } from '@next/env'
-import serverConstants from './notion/server-constants'
+import serverConstants from '@lib/server-constants'
 
 // must use weird syntax to bypass auto replacing of NODE_ENV
 process.env['NODE' + '_ENV'] = 'production'

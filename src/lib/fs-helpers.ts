@@ -1,5 +1,2 @@
-import fs from 'fs'
-import { promisify } from 'util'
-
-export const readFile = promisify(fs.readFile)
-export const writeFile = promisify(fs.writeFile)
+export { readJson, writeJson, readJsonSync, writeJsonSync } from 'fs-extra';
+export { readFile, writeFile } from 'fs/promises';
