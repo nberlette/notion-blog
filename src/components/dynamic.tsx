@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import ExtLink from './ext-link'
 
-export default {
+const dynamicTags = {
   // default tags
   ol: 'ol',
   ul: 'ul',
@@ -14,3 +14,5 @@ export default {
   Counter: dynamic(() => import('./counter')),
   Equation: dynamic(() => import('./equation')),
 }
+
+export default dynamicTags;

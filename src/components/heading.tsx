@@ -1,4 +1,4 @@
-const collectText = (el, acc = []) => {
+const collectText = (el: any, acc = []) => {
   if (el) {
     if (typeof el === 'string') acc.push(el)
     if (Array.isArray(el)) el.map((item) => collectText(item, acc))
@@ -8,14 +8,14 @@ const collectText = (el, acc = []) => {
 }
 
 const Heading = ({ children: component, id }: { children: any; id?: any }) => {
-  const children = component.props.children || ''
+  const children = component.props.children || '';
   let text = children
 
   if (null == id) {
     id = collectText(text)
       .toLowerCase()
       .replace(/\s/g, '-')
-      .replace(/[?!:]/g, '')
+      .replace(/[^a-z0-9-_]/ig, '')
   }
 
   return (

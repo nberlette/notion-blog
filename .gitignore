@@ -28,7 +28,22 @@ yarn-error.log*
 .blog_index_data_previews
 
 .now
-.vercel.env
-.env.local
 .vercel
+.env
+.vercel/**
 pnpm-lock.yaml
+.env
+.env.*
+.env.*.local
+!.env.example
+!.env.example.local
+
+**/node_modules/**
+*.log
+*.pem
+*.crt
+*.private
+*.key
+.ssl
+.ssh
+.gnupg

@@ -1,14 +1,15 @@
-import Header from '../components/header'
-import ExtLink from '../components/ext-link'
-import Features from '../components/features'
-import sharedStyles from '../styles/shared.module.css'
+import Header from '@components/header'
+import ExtLink from '@components/ext-link'
+import Features from '@components/features'
+import sharedStyles from './shared.module.css'
+import Image from 'next/image'
 
 export default function Index() {
   return (
     <>
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
-        <img
+        <Image
           src="/vercel-and-notion.png"
           height="85"
           width="250"
@@ -16,7 +17,7 @@ export default function Index() {
         />
         <h1>My Notion Blog</h1>
         <h2>
-          Blazing Fast Notion Blog with Next.js'{' '}
+          Blazing Fast Notion Blog with Next.js{"' "}
           <ExtLink
             href="https://github.com/vercel/next.js/issues/9524"
             className="dotted"
@@ -50,18 +51,33 @@ export default function Index() {
           <p>
             Get started by creating a new page in Notion and clicking the deploy
             button below. After you supply your token and the blog index id (the
-            page's id in Notion) we will automatically create the table for you!
+            page{"'"}s id in Notion) we will automatically create the table for you!
             See{' '}
             <ExtLink href="https://github.com/ijjk/notion-blog#getting-blog-index-and-token">
               here in the readme
             </ExtLink>{' '}
-            for finding the new page's id. To get your token from Notion, login
+            for finding the new page{"'"}s id. To get your token from Notion, login
             and look for a cookie under www.notion.so with the name `token_v2`.
-            After finding your token and your blog's page id you should be good
+            After finding your token and your blog{"'"}s page id you should be good
             to go!
           </p>
         </div>
       </div>
+      <footer style={{ margin: '2em 0' }}>
+        <ExtLink href="https://vercel.com/new/git/external?repository-url=https://github.com/nberlette/notion-blog/tree/main&project-name=notion-blog&repository-name=notion-blog">
+          <Image
+            src="https://vercel.com/button"
+            width={200}
+            alt="Deploy to Vercel button"
+          />
+        </ExtLink>
+        <span>
+          {' '}
+          <ExtLink href="https://github.com/nberlette/notion-blog">
+            View Source on GitHub
+          </ExtLink>
+        </span>
+      </footer>
     </>
   )
 }

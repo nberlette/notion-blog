@@ -1,35 +1,31 @@
-import Header from '../components/header'
-import ExtLink from '../components/ext-link'
-
-import sharedStyles from '../styles/shared.module.css'
-import contactStyles from '../styles/contact.module.css'
-
-import GitHub from '../components/svgs/github'
-import Twitter from '../components/svgs/twitter'
-import Envelope from '../components/svgs/envelope'
-import LinkedIn from '../components/svgs/linkedin'
+import Header from '@components/header'
+import ExtLink from '@components/ext-link'
+import Image from 'next/image'
+import sharedStyles from './shared.module.css'
+import contactStyles from './contact.module.css'
+import { GitHub, Twitter, Envelope, Unsplash } from '@components/svgs';
 
 const contacts = [
   {
-    Comp: Twitter,
-    alt: 'twitter icon',
-    link: 'https://twitter.com/_ijjk',
+    Comp: Envelope,
+    alt: 'Email',
+    link: 'mailto:nick@berlette.com?subject=Next.js+Notion+Blog',
   },
   {
     Comp: GitHub,
-    alt: 'github icon',
-    link: 'https://github.com/ijjk',
+    alt: 'GitHub',
+    link: 'https://github.com/nberlette',
   },
   {
-    Comp: LinkedIn,
-    alt: 'linkedin icon',
-    link: 'https://www.linkedin.com/in/jj-kasper-0b5392166/',
+    Comp: Twitter,
+    alt: 'Twitter',
+    link: 'https://twitter.com/nberlette',
   },
   {
-    Comp: Envelope,
-    alt: 'envelope icon',
-    link: 'mailto:jj@jjsweb.site?subject=Notion Blog',
-  },
+    Comp: Unsplash,
+    alt: 'Unsplash',
+    link: 'https://unsplash.com/@nberlette',
+  }
 ]
 
 export default function Contact() {
@@ -38,21 +34,22 @@ export default function Contact() {
       <Header titlePre="Contact" />
       <div className={sharedStyles.layout}>
         <div className={contactStyles.avatar}>
-          <img src="/avatar.png" alt="avatar with letters JJ" height={60} />
+          <Image src="https://github.com/nberlette.png" alt="@nberlette's github avatar" height={96}
+            className="avatar-image" />
+          <style jsx>{`.avatar-image { border-radius: 10em }`}</style>
         </div>
 
-        <h1 style={{ marginTop: 0 }}>Contact</h1>
+        <h1 style={{ margin: '1em 0 0.3em 0' }}>Nicholas Berlette</h1>
 
-        <div className={contactStyles.name}>
-          JJ Kasper - Next.js Engineer @{' '}
-          <ExtLink href="https://vercel.com">Vercel</ExtLink>
+        <div className={contactStyles.name} style={{ marginBottom: '5em' }}>
+          Full-stack Developer
         </div>
 
         <div className={contactStyles.links}>
           {contacts.map(({ Comp, link, alt }) => {
             return (
               <ExtLink key={link} href={link} aria-label={alt}>
-                <Comp height={32} />
+                <Comp height={48} />
               </ExtLink>
             )
           })}

@@ -1,6 +1,6 @@
-import '../styles/global.css'
+import '../global.scss'
 import 'katex/dist/katex.css'
-import Footer from '../components/footer'
+import Footer from '@components/footer'
 
 export default function MyApp({ Component, pageProps }) {
   return (
@@ -8,5 +8,5 @@ export default function MyApp({ Component, pageProps }) {
       <Component {...pageProps} />
       <Footer />
     </>
-  )
+  ) 
 }
