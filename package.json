@@ -63,7 +63,7 @@
     "next-plugin-preact": "3.0.6",
     "preact": "10.6.4",
     "preact-render-to-string": "5.1.19",
-    "prismjs": "1.25.0",
+    "prismjs": "1.27.0",
     "react": "npm:@preact/compat@^17.0.2",
     "react-dom": "npm:@preact/compat@^17.0.2",
     "react-ssr-prepass": "npm:preact-ssr-prepass@1.2.0",
